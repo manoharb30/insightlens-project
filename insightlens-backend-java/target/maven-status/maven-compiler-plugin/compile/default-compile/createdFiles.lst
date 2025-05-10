@@ -1,0 +1,4 @@
+com/insightlens/core/controller/HealthCheckController.class
+com/insightlens/core/InsightLensCoreApplication.class
+com/insightlens/core/config/WebConfig.class
+com/insightlens/core/service/OrchestrationService.class
