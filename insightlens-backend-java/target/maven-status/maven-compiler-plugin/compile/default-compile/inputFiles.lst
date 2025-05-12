@@ -1,4 +1,14 @@
-/Users/shreshta/insightlens-project/insightlens-backend-java/src/main/java/com/insightlens/core/config/WebConfig.java
+/Users/shreshta/insightlens-project/insightlens-backend-java/src/main/java/com/insightlens/core/service/StreamingSegmentContentHandler.java
 /Users/shreshta/insightlens-project/insightlens-backend-java/src/main/java/com/insightlens/core/controller/HealthCheckController.java
+/Users/shreshta/insightlens-project/insightlens-backend-java/src/main/java/com/insightlens/core/controller/DocumentController.java
+/Users/shreshta/insightlens-project/insightlens-backend-java/src/main/java/com/insightlens/core/model/DocumentSegment.java
 /Users/shreshta/insightlens-project/insightlens-backend-java/src/main/java/com/insightlens/core/service/OrchestrationService.java
+/Users/shreshta/insightlens-project/insightlens-backend-java/src/main/java/com/insightlens/core/repository/DocumentSegmentRepository.java
+/Users/shreshta/insightlens-project/insightlens-backend-java/src/main/java/com/insightlens/core/repository/DocumentRepository.java
+/Users/shreshta/insightlens-project/insightlens-backend-java/src/main/java/com/insightlens/core/service/AsyncDocumentProcessorService.java
+/Users/shreshta/insightlens-project/insightlens-backend-java/src/main/java/com/insightlens/core/service/TextSegmenterService.java
+/Users/shreshta/insightlens-project/insightlens-backend-java/src/main/java/com/insightlens/core/config/WebConfig.java
+/Users/shreshta/insightlens-project/insightlens-backend-java/src/main/java/com/insightlens/core/model/DocumentStatus.java
+/Users/shreshta/insightlens-project/insightlens-backend-java/src/main/java/com/insightlens/core/model/Document.java
 /Users/shreshta/insightlens-project/insightlens-backend-java/src/main/java/com/insightlens/core/InsightLensCoreApplication.java
+/Users/shreshta/insightlens-project/insightlens-backend-java/src/main/java/com/insightlens/core/config/AsyncConfig.java

@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  postgres_db:
+    image: postgres:15 # Or your preferred PostgreSQL version
+    container_name: insightlens_postgres_db
+    environment:
+      POSTGRES_USER: insightlens_user # Matches application.properties
+      POSTGRES_PASSWORD: insightlens   # Matches application.properties
+      POSTGRES_DB: insightlens_db     # Matches application.properties
+    ports:
+      - "5433:5432" # Exposes PostgreSQL on host port 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - insightlens_network
+
+  insightlens-backend-java:
+    container_name: insightlens_backend_java
+    build:
+      context: ./insightlens-backend-java
+      dockerfile: Dockerfile # Assumes Dockerfile is in the root of insightlens-backend-java
+    ports:
+      - "8080:8080" # Exposes Spring Boot app on host port 8080
+    environment:
+      # These ensure the Java app uses the Docker service names for DB and other services
+      # SPRING_DATASOURCE_URL is already configured to use 'postgres_db' in application.properties
+      # SPRING_DATASOURCE_USERNAME and PASSWORD are also in application.properties
+      EMBEDDING_SERVICE_URL: http://insightlens-embedding-service-python:8000
+      LLM_ANALYSIS_SERVICE_URL: http://insightlens-llm-analysis-service-python:8001
+      # JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" # Optional: for remote debugging
+    depends_on:
+      - postgres_db
+    volumes:
+      # For development, if you want to reflect source code changes without rebuilding the image constantly (requires dev mode in Spring Boot):
+      # - ./insightlens-backend-java/src:/app/src # Adjust path if your Dockerfile puts source elsewhere
+      - backend_target:/app/target # Example if your Dockerfile copies the JAR to /app and you want to inspect it
+    networks:
+      - insightlens_network
+
+  insightlens-embedding-service-python:
+    container_name: insightlens_embedding_python
+    build:
+      context: ./insightlens-embedding-service-python
+      dockerfile: Dockerfile # Assumes Dockerfile is in the root of this service
+    ports:
+      - "8000:8000" # Exposes FastAPI app on host port 8000 (internal container port should also be 8000)
+    # The command to run uvicorn should be in your Dockerfile's CMD or ENTRYPOINT
+    # e.g., CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    volumes:
+      # For development with hot-reloading for Python/FastAPI:
+      - ./insightlens-embedding-service-python/app:/app/app
+    networks:
+      - insightlens_network
+
+  insightlens-llm-analysis-service-python:
+    container_name: insightlens_llm_python
+    build:
+      context: ./insightlens-llm-analysis-service-python
+      dockerfile: Dockerfile # Assumes Dockerfile is in the root of this service
+    ports:
+      - "8001:8001" # Exposes FastAPI app on host port 8001 (internal container port should also be 8001)
+    # Command to run uvicorn should be in your Dockerfile
+    # e.g., CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]
+    volumes:
+      # For development with hot-reloading:
+      - ./insightlens-llm-analysis-service-python/app:/app/app
+    networks:
+      - insightlens_network
+
+  # insightlens-frontend-react:
+  #   container_name: insightlens_frontend_react
+  #   build:
+  #     context: ./insightlens-frontend-react
+  #     dockerfile: Dockerfile # Assumes Dockerfile is in the root of this service
+  #   ports:
+  #     - "3000:3000" # Exposes React dev server (or your app) on host port 3000
+  #   volumes:
+  #     # For development with hot-reloading for React:
+  #     - ./insightlens-frontend-react/src:/app/src
+  #     - ./insightlens-frontend-react/public:/app/public
+  #   environment:
+  #     - NODE_ENV=development # Or as needed by your React setup
+  #     # Ensure your React app's API calls point to http://localhost:8080 (or the backend's exposed host port)
+  #     # Or configure a proxy in React's package.json
+  #   networks:
+  #     - insightlens_network
+
+volumes:
+  postgres_data: # Named volume for PostgreSQL data persistence
+  backend_target: # Example named volume, adjust if needed
+
+networks:
+  insightlens_network:
+    driver: bridge

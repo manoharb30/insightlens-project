@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  postgres_db:
+    image: postgres:15
+    container_name: insightlens_postgres
+    environment:
+      POSTGRES_DB: insightlens_db
+      POSTGRES_USER: insightlens_user
+      POSTGRES_PASSWORD: insightlens
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U insightlens_user -d insightlens_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data: 
