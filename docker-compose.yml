@@ -15,29 +15,6 @@ services:
     networks:
       - insightlens_network
 
-  insightlens-backend-java:
-    container_name: insightlens_backend_java
-    build:
-      context: ./insightlens-backend-java
-      dockerfile: Dockerfile # Assumes Dockerfile is in the root of insightlens-backend-java
-    ports:
-      - "8080:8080" # Exposes Spring Boot app on host port 8080
-    environment:
-      # These ensure the Java app uses the Docker service names for DB and other services
-      # SPRING_DATASOURCE_URL is already configured to use 'postgres_db' in application.properties
-      # SPRING_DATASOURCE_USERNAME and PASSWORD are also in application.properties
-      EMBEDDING_SERVICE_URL: http://insightlens-embedding-service-python:8000
-      LLM_ANALYSIS_SERVICE_URL: http://insightlens-llm-analysis-service-python:8001
-      # JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" # Optional: for remote debugging
-    depends_on:
-      - postgres_db
-    volumes:
-      # For development, if you want to reflect source code changes without rebuilding the image constantly (requires dev mode in Spring Boot):
-      # - ./insightlens-backend-java/src:/app/src # Adjust path if your Dockerfile puts source elsewhere
-      - backend_target:/app/target # Example if your Dockerfile copies the JAR to /app and you want to inspect it
-    networks:
-      - insightlens_network
-
   insightlens-embedding-service-python:
     container_name: insightlens_embedding_python
     build:
@@ -88,7 +65,6 @@ services:
 
 volumes:
   postgres_data: # Named volume for PostgreSQL data persistence
-  backend_target: # Example named volume, adjust if needed
 
 networks:
   insightlens_network:
